@@ -35,6 +35,18 @@ namespace DriverThermicPrinter {
             while (running) {
                 try {
                     var coneccion = await listener.GetContextAsync();
+
+                    coneccion.Response.AddHeader("Access-Control-Allow-Origin", "*");
+                    coneccion.Response.AddHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+                    coneccion.Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
+
+                    // Manejar preflight OPTIONS
+                    if (coneccion.Request.HttpMethod == "OPTIONS") {
+                        coneccion.Response.StatusCode = 200;
+                        coneccion.Response.Close();
+                        continue;
+                    }
+
                     string body;
 
                     using (var reader = new StreamReader(coneccion.Request.InputStream, Encoding.UTF8)) {
@@ -76,6 +88,7 @@ namespace DriverThermicPrinter {
             }
         }
 
+
         private bool Print(string text) {
             try {
                 PrintDocument doc = new PrintDocument();
@@ -88,8 +101,8 @@ namespace DriverThermicPrinter {
                     try {
                         Font fuente = formConfiguracion?.ObtenerFuenteConfiguracion() ?? new Font("Consolas", 10);
 
-                        float margenIzquierdo = 10;
-                        float margenSuperior = 10;
+                        float margenIzquierdo = 0;
+                        float margenSuperior = 0;
                         float anchoMaximo = e.PageBounds.Width - ( margenIzquierdo * 2 );
 
                         RectangleF area = new RectangleF(margenIzquierdo, margenSuperior, anchoMaximo, e.PageBounds.Height);

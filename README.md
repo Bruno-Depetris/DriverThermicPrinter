@@ -1,333 +1,358 @@
-﻿# 🖨️ Printer Driver Manager
+﻿# 🖨️ Driver Impresora Térmica - PREDITS
 
-Sistema de gestión de impresoras térmicas para integración con aplicaciones web desarrollado por **Predits**.
+[![.NET Framework](https://img.shields.io/badge/.NET%20Framework-4.7.2+-blue.svg)](https://dotnet.microsoft.com/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Windows](https://img.shields.io/badge/platform-Windows-lightgrey.svg)](https://www.microsoft.com/windows)
+
+Sistema de gestión de impresoras térmicas para integración con aplicaciones web mediante API REST local.
 
 ## 📋 Descripción
 
-Printer Driver Manager es un agente de impresión que corre en segundo plano y permite que aplicaciones web puedan imprimir documentos en impresoras térmicas locales mediante peticiones HTTP.
+Driver Impresora Térmica es una aplicación de escritorio que actúa como puente entre aplicaciones web y impresoras térmicas locales. Permite a sistemas web enviar trabajos de impresión directamente a impresoras térmicas sin necesidad de diálogos de impresión del navegador.
 
 ## ✨ Características
 
-- 🖨️ Gestión de múltiples impresoras
-- 🎨 Configuración de tipografía y tamaño de letra
-- 💾 Guardado automático de configuración
-- 🌐 API REST para integración web
-- 🔔 Sistema de notificaciones
-- 🎯 Interfaz intuitiva y moderna
-- 🔒 Ejecuta en segundo plano desde la bandeja del sistema
+- 🚀 **API REST Local** - Servidor HTTP en localhost para recepción de trabajos de impresión
+- 🔧 **Configuración Sencilla** - Interfaz gráfica para selección de impresora y puerto
+- 📊 **Verificación de Estado** - Endpoint para comprobar conectividad y estado del driver
+- 🎨 **Fuente Personalizable** - Configuración de tipo y tamaño de fuente
+- 🔄 **Puerto Dinámico** - Cambio de puerto sin reiniciar aplicación
+- 💾 **Configuración Persistente** - Guarda preferencias entre sesiones
+- 🎯 **Bandeja del Sistema** - Ejecución en segundo plano con acceso rápido
+- 🔒 **CORS Configurable** - Soporte para integración segura con aplicaciones web
+
+## 🎯 Casos de Uso
+
+- Sistemas POS (Punto de Venta)
+- Aplicaciones de ticketing
+- Sistemas de gestión de pedidos
+- Aplicaciones de control de inventario
+- Cualquier sistema web que requiera impresión directa
+
+## 📦 Requisitos del Sistema
+
+- **Sistema Operativo:** Windows 7 / 8 / 10 / 11
+- **.NET Framework:** 4.7.2 o superior
+- **Memoria RAM:** 256 MB mínimo
+- **Espacio en Disco:** 10 MB
+- **Permisos:** Acceso a impresoras del sistema
 
 ## 🚀 Instalación
 
-### Requisitos Previos
+### Instalación Básica
 
-- Windows 7 o superior
-- .NET Framework 4.7.2 o superior
-- Al menos una impresora instalada en el sistema
+1. Descarga el instalador `DriverThermicPrinter-Setup.exe` desde [Releases](releases)
+2. Ejecuta el instalador
+3. Sigue las instrucciones del asistente de instalación
+4. La aplicación se iniciará automáticamente al finalizar
 
-### Pasos de Instalación
+### Instalación Portable
 
-1. **Descargar la aplicación**
-   - Descarga el archivo `PrinterDriverManager.exe`
-   - Asegúrate de tener la carpeta `Assets` con el icono `predits.ico`
-
-2. **Ejecutar por primera vez**
-   - Doble clic en `PrinterDriverManager.exe`
-   - Se minimizará a la bandeja del sistema (cerca del reloj)
-   - Verás un icono con el logo de Predits
-
-3. **Configuración inicial**
-   - Haz clic derecho en el icono de la bandeja
-   - Selecciona "🖨️ Configurar Impresora"
-   - Sigue las instrucciones de configuración
+1. Descarga `DriverThermicPrinter-Portable.zip`
+2. Extrae el contenido en una carpeta de tu elección
+3. Ejecuta `DriverThermicPrinter.exe`
 
 ## ⚙️ Configuración
 
-### 1. Seleccionar Impresora
+### Primera Vez
 
-1. Abre la ventana de configuración (clic derecho → "🖨️ Configurar Impresora")
-2. En la lista de **"Impresoras Disponibles"** verás todas las impresoras instaladas
-3. Haz clic en la fila de la impresora que deseas usar
-4. Haz clic en la columna **"Seleccionar"** (icono de check)
-5. Verás la impresora seleccionada en el panel derecho
+1. Al iniciar, la aplicación aparecerá en la bandeja del sistema (system tray)
+2. Haz clic derecho en el icono y selecciona **"Configurar Impresora"**
+3. Selecciona tu impresora térmica de la lista
+4. Configura el puerto deseado (por defecto: 55000)
+5. Opcionalmente, ajusta la fuente de impresión
+6. Haz clic en **"Guardar"**
 
-### 2. Configurar Tipografía
+### Cambio de Puerto
 
-En el panel derecho encontrarás:
+El driver soporta los siguientes puertos:
+- 49152
+- 50000
+- 55000 (recomendado)
+- 60000
+- 65000
 
-- **Tipo de fuente**: Selecciona la tipografía que prefieras
-  - Recomendadas para impresoras térmicas: `Consolas`, `Courier New`
-  - Disponibles: Arial, Segoe UI, Calibri, Times New Roman, etc.
+Para cambiar el puerto:
+1. Abre la ventana de configuración
+2. Selecciona el nuevo puerto del menú desplegable
+3. Guarda los cambios
+4. El servidor se reiniciará automáticamente en el nuevo puerto
 
-- **Tamaño de la letra**: Elige el tamaño en puntos
-  - Rango disponible: 6pt a 24pt
-  - Recomendado: 10pt - 12pt
+## 🔌 API REST
 
-### 3. Guardar Configuración
+### Endpoints Disponibles
 
-- ✅ Los cambios se guardan **automáticamente**
-- Recibirás una notificación cada vez que se guarde la configuración
-- La configuración se mantiene entre reinicios
-
-## 🌐 Uso desde Aplicaciones Web
-
-### API REST
-
-El servidor escucha en el puerto **12345** de tu máquina local.
-
-#### Endpoint: Imprimir
-
+#### 1. Verificar Estado
 ```http
-POST http://localhost:12345/print
-Content-Type: text/plain
-
-Tu texto a imprimir aquí
+GET http://localhost:55000/status
 ```
 
-**Ejemplo con JavaScript (Fetch API):**
-
-```javascript
-async function imprimir(texto) {
-    try {
-        const response = await fetch('http://localhost:12345/print', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain'
-            },
-            body: texto
-        });
-        
-        const resultado = await response.json();
-        console.log(resultado); // {status: "ok", message: "Impresión enviada correctamente"}
-    } catch (error) {
-        console.error('Error al imprimir:', error);
-    }
-}
-
-// Usar la función
-imprimir('Hola Mundo\nEsta es una prueba de impresión');
-```
-
-**Ejemplo con jQuery:**
-
-```javascript
-function imprimir(texto) {
-    $.ajax({
-        url: 'http://localhost:12345/print',
-        type: 'POST',
-        data: texto,
-        contentType: 'text/plain',
-        success: function(response) {
-            console.log('Impresión exitosa:', response);
-        },
-        error: function(xhr, status, error) {
-            console.error('Error al imprimir:', error);
-        }
-    });
-}
-```
-
-**Ejemplo con cURL:**
-
-```bash
-curl -X POST http://localhost:12345/print \
-  -H "Content-Type: text/plain" \
-  -d "Texto de prueba para imprimir"
-```
-
-#### Endpoint: Estado del Servidor
-
-```http
-GET http://localhost:12345/status
-```
-
-**Respuesta:**
-
+**Respuesta Exitosa:**
 ```json
 {
-    "status": "running",
-    "printer": "HP LaserJet Pro"
+  "status": "running",
+  "printer": "Nombre de la Impresora"
 }
 ```
 
-**Ejemplo:**
+#### 2. Imprimir Texto
+```http
+POST http://localhost:55000/print
+Content-Type: text/plain
 
+Texto a imprimir...
+```
+
+**Respuesta Exitosa:**
+```json
+{
+  "status": "ok",
+  "message": "Impresión enviada correctamente"
+}
+```
+
+**Respuesta de Error:**
+```json
+{
+  "status": "error",
+  "message": "Error al imprimir"
+}
+```
+
+### Ejemplos de Integración
+
+#### JavaScript / Fetch API
 ```javascript
-async function verificarEstado() {
-    const response = await fetch('http://localhost:12345/status');
-    const status = await response.json();
-    console.log('Impresora actual:', status.printer);
+// Verificar estado
+async function verificarImpresora() {
+  const response = await fetch('http://localhost:55000/status');
+  const data = await response.json();
+  console.log(data);
+}
+
+// Imprimir texto
+async function imprimir(texto) {
+  const response = await fetch('http://localhost:55000/print', {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: texto
+  });
+  const result = await response.json();
+  return result;
 }
 ```
 
-## 📱 Uso de la Aplicación
+#### jQuery
+```javascript
+// Imprimir ticket
+$.ajax({
+  url: 'http://localhost:55000/print',
+  method: 'POST',
+  contentType: 'text/plain',
+  data: 'Mi ticket de impresión',
+  success: function(response) {
+    console.log('Impreso:', response);
+  }
+});
+```
 
-### Icono de Bandeja del Sistema
+#### C# / HttpClient
+```csharp
+using (var client = new HttpClient())
+{
+    var content = new StringContent("Texto a imprimir", Encoding.UTF8, "text/plain");
+    var response = await client.PostAsync("http://localhost:55000/print", content);
+    var result = await response.Content.ReadAsStringAsync();
+}
+```
 
-Haz **clic derecho** en el icono para ver las opciones:
+#### Python / Requests
+```python
+import requests
 
-- 🖨️ **Configurar Impresora**: Abre la ventana de configuración
-- 📁 **Abrir Carpeta**: Abre la carpeta donde está instalada la aplicación
-- ℹ️ **Acerca de**: Muestra información sobre la aplicación
-- ❌ **Salir**: Cierra la aplicación (requiere confirmación)
+# Verificar estado
+response = requests.get('http://localhost:55000/status')
+print(response.json())
 
-### Doble Clic
+# Imprimir
+response = requests.post(
+    'http://localhost:55000/print',
+    data='Texto a imprimir'.encode('utf-8'),
+    headers={'Content-Type': 'text/plain'}
+)
+print(response.json())
+```
 
-Haz **doble clic** en el icono de la bandeja para abrir rápidamente la ventana de configuración.
+## 🛡️ Seguridad
 
-## 🔧 Solución de Problemas
+### CORS (Cross-Origin Resource Sharing)
 
-### La aplicación no inicia
+El driver incluye soporte CORS para permitir peticiones desde navegadores web. Por defecto, acepta peticiones de cualquier origen en localhost.
 
-1. Verifica que tienes .NET Framework 4.7.2 o superior instalado
-2. Ejecuta como administrador si es necesario
-3. Verifica que el puerto 12345 no esté en uso por otra aplicación
+Para producción, se recomienda configurar orígenes específicos modificando el código fuente:
 
-### No aparecen impresoras
+```csharp
+string[] origenesPermitidos = { 
+    "https://tuapp.com",
+    "https://www.tuapp.com"
+};
+```
 
-1. Verifica que tienes impresoras instaladas en Windows
-2. Ve a: Panel de Control → Dispositivos e impresoras
-3. Asegúrate de que las impresoras estén en estado "Listo"
+### Consideraciones de Seguridad
 
-### Las aplicaciones web no pueden imprimir
+- ⚠️ El servidor solo escucha en `localhost`, no es accesible desde la red
+- ⚠️ No se recomienda exponer el puerto a través de firewall
+- ✅ Para producción, implementa autenticación mediante API Keys
+- ✅ Valida el tamaño y contenido de las impresiones
+- ✅ Implementa rate limiting para evitar abuso
 
-1. Verifica que el agente esté ejecutándose (icono en bandeja)
-2. Verifica que estés usando la URL correcta: `http://localhost:12345/print`
-3. Revisa la consola del navegador para ver errores
-4. Algunos navegadores pueden bloquear peticiones a localhost por CORS
+## 📁 Estructura de Archivos
 
-### Error "Impresora no válida"
+```
+DriverThermicPrinter/
+├── DriverThermicPrinter.exe          # Ejecutable principal
+├── Assets/
+│   └── predits.ico                    # Icono de la aplicación
+├── Forms/
+│   ├── Form_Configurar.cs             # Ventana de configuración
+│   └── Notificacion/
+│       └── msj.cs                     # Sistema de notificaciones
+├── PrinterServer.cs                   # Servidor HTTP
+├── TrayAppContext.cs                  # Gestión de bandeja del sistema
+└── ConfigurarPuerto.cs                # Gestión de configuración
 
-1. Abre la configuración
-2. Selecciona nuevamente la impresora de la lista
-3. Verifica que la impresora esté encendida y conectada
+%AppData%/DriverThermicPrinter/
+└── config.txt                         # Archivo de configuración
+```
 
-### La configuración no se guarda
+## 🔧 Configuración Avanzada
 
-1. Verifica que tengas permisos de escritura en la carpeta de la aplicación
-2. Ejecuta la aplicación como administrador
-3. La configuración se guarda en: `%LOCALAPPDATA%\PrinterDriverManager\`
+### Archivo de Configuración
 
-## 📝 Formato de Impresión
+Ubicación: `%AppData%\DriverThermicPrinter\config.txt`
+
+```
+PORT=55000
+```
+
+### Modificar Puertos Disponibles
+
+Edita el archivo `ConfigurarPuerto.cs`:
+
+```csharp
+public int[] Puertos = new int[] { 49152, 50000, 55000, 60000, 65000 };
+```
+
+## 🐛 Solución de Problemas
+
+### La aplicación no se conecta
+
+1. Verifica que el driver esté ejecutándose (icono en bandeja del sistema)
+2. Confirma el puerto correcto en la configuración
+3. Verifica que no haya otro programa usando el mismo puerto
+4. Abre símbolo del sistema y ejecuta: `netstat -ano | findstr :55000`
+
+### Error "Puerto en uso"
+
+- Cierra otras instancias de la aplicación
+- Cambia a un puerto diferente en la configuración
+- Verifica con Task Manager que no hay procesos huérfanos
+
+### La impresora no imprime
+
+1. Verifica que la impresora esté seleccionada correctamente en configuración
+2. Comprueba que la impresora esté encendida y conectada
+3. Prueba imprimir desde otra aplicación para verificar drivers
+4. Revisa que la impresora no esté en modo "Offline"
+
+### Problemas de CORS
+
+Si recibes errores CORS desde tu aplicación web:
+
+1. Verifica que estés usando `http://localhost` (no `127.0.0.1`)
+2. Asegúrate de incluir headers CORS en el servidor
+3. Para aplicaciones web externas, configura orígenes permitidos
+
+## 📝 Formato de Tickets
+
+### Ejemplo de Ticket Básico
+
+```
+================================
+       MI NEGOCIO
+================================
+Fecha: 27/10/2025
+Hora: 14:30:00
+--------------------------------
+Item         Cant    Precio
+--------------------------------
+Producto 1     2     $10.00
+Producto 2     1     $15.00
+--------------------------------
+             TOTAL:   $35.00
+================================
+  ¡Gracias por su compra!
+================================
+```
 
 ### Caracteres Especiales
 
-Puedes usar estos caracteres en tu texto:
+La impresora soporta caracteres ASCII estándar. Para mejor compatibilidad:
+- Usa fuentes monoespaciadas (Consolas, Courier New)
+- Evita caracteres Unicode complejos
+- Limita el ancho a 32-48 caracteres según tu impresora
 
-- `\n` - Nueva línea
-- `\t` - Tabulación
-- Caracteres UTF-8 estándar
+## 🤝 Contribuciones
 
-### Ejemplo de Ticket
+Las contribuciones son bienvenidas. Por favor:
 
-```javascript
-const ticket = `
-================================
-        MI NEGOCIO S.A.
-================================
-Fecha: ${new Date().toLocaleDateString()}
-Hora: ${new Date().toLocaleTimeString()}
---------------------------------
-PRODUCTOS:
-1x Producto A          $10.00
-2x Producto B          $25.00
---------------------------------
-SUBTOTAL:              $35.00
-IVA (21%):              $7.35
---------------------------------
-TOTAL:                 $42.35
-================================
-     ¡Gracias por su compra!
-================================
-`;
-
-imprimir(ticket);
-```
-
-## 🔐 Seguridad
-
-- La aplicación **solo** escucha en localhost (127.0.0.1)
-- No acepta conexiones externas
-- No guarda información sensible
-- La configuración es local al usuario
-
-## 🆘 Soporte
-
-Si tienes problemas o preguntas:
-
-1. Revisa esta documentación
-2. Verifica los logs de la aplicación
-3. Contacta a soporte técnico de Predits
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
 
 ## 📄 Licencia
 
-Copyright © 2025 Predits. Todos los derechos reservados.
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
 
-## 🔄 Actualizaciones
+## 👥 Autores
 
-Para actualizar la aplicación:
+* **PREDITS** - *Desarrollo Inicial* - [PREDITS](https://github.com/predits)
 
-1. Cierra el agente (clic derecho → Salir)
-2. Reemplaza el archivo ejecutable
-3. Inicia la aplicación nuevamente
-4. Tu configuración se mantendrá
+## 🙏 Agradecimientos
 
-## 💡 Tips y Trucos
+* A la comunidad de desarrollo de impresoras térmicas
+* A todos los contribuidores del proyecto
+* A los usuarios que reportan bugs y sugieren mejoras
 
-### Ejecutar al Inicio de Windows
+## 📞 Soporte
 
-1. Presiona `Win + R`
-2. Escribe `shell:startup`
-3. Crea un acceso directo de `PrinterDriverManager.exe` en esa carpeta
+- 📧 Email: soporte@predits.com
+- 🌐 Web: https://predits.com
+- 📝 Issues: [GitHub Issues](https://github.com/predits/driver-thermic-printer/issues)
 
-### Probar la Impresión
+## 🗺️ Roadmap
 
-Usa este HTML para probar rápidamente:
+- [ ] Soporte para imágenes y logos
+- [ ] Dashboard web de administración
+- [ ] Soporte para múltiples impresoras simultáneas
+- [ ] Sistema de colas de impresión
+- [ ] Logs detallados de actividad
+- [ ] Soporte para comandos ESC/POS
+- [ ] Actualización automática
+- [ ] Instalador MSI profesional
 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Prueba de Impresión</title>
-</head>
-<body>
-    <h1>Prueba de Impresora</h1>
-    <textarea id="texto" rows="10" cols="50">
-Hola Mundo
-Esta es una prueba
-    </textarea>
-    <br>
-    <button onclick="imprimir()">Imprimir</button>
-    
-    <script>
-        async function imprimir() {
-            const texto = document.getElementById('texto').value;
-            try {
-                const response = await fetch('http://localhost:12345/print', {
-                    method: 'POST',
-                    body: texto
-                });
-                const result = await response.json();
-                alert('Resultado: ' + result.message);
-            } catch (error) {
-                alert('Error: ' + error.message);
-            }
-        }
-    </script>
-</body>
-</html>
-```
+## 📊 Changelog
 
-### Verificar que el servidor está activo
-
-Abre en tu navegador: `http://localhost:12345/status`
-
-Deberías ver algo como:
-```json
-{"status":"running","printer":"Tu Impresora"}
-```
+### v1.0.0 (2025-10-27)
+- 🎉 Versión inicial
+- ✅ API REST básica
+- ✅ Configuración de impresora
+- ✅ Soporte CORS
+- ✅ Cambio dinámico de puerto
+- ✅ Interfaz de bandeja del sistema
 
 ---
 
-**Desarrollado con ❤️ por Predits**
-
-*Versión 1.0 - 2025*
+**Hecho con ❤️ por PREDITS** | © 2025 Todos los derechos reservados

@@ -13,7 +13,7 @@ namespace DriverThermicPrinter.Forms {
         private string impresoraSeleccionada = "";
         private string tipografiaSeleccionada = "Consolas";
         private int tamañoLetraSeleccionado = 10;
-
+        public event Action<int> OnPuertoCambiado;
         public Form_Configurar() {
             InitializeComponent();
             InicializarFormulario();
@@ -295,12 +295,18 @@ namespace DriverThermicPrinter.Forms {
         }
 
         private void hopeButton_CambiarPuerto_Click(object sender, EventArgs e) {
+
+            int nuevoPuerto = 0;    
+           
+            MessageBox.Show($"Puerto cambiado a {nuevoPuerto}. Servidor reiniciado.",
+                "Puerto Actualizado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
             if (poisonComboBox_PuertosDisponibles.Text != null) {
                 ConfigurarPuerto.Instancia.CambiarPuerto(Convert.ToInt32(poisonComboBox_PuertosDisponibles.Text));
-
+                nuevoPuerto = Convert.ToInt32(poisonComboBox_PuertosDisponibles.Text);
                 MostrarNotificacion("EXITO", "puerto cambiado con exito", TipoNotificacion.Exito);
                 labelEdit_PuertoActivo.Text = Convert.ToString(ConfigurarPuerto.Instancia.LeerPuerto());
-
+                OnPuertoCambiado?.Invoke(nuevoPuerto);
                 return;
             }
 
