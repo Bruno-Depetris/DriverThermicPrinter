@@ -36,6 +36,7 @@ namespace DriverThermicPrinter {
                 try {
                     var coneccion = await listener.GetContextAsync();
                     string body;
+
                     using (var reader = new StreamReader(coneccion.Request.InputStream, Encoding.UTF8)) {
                         body = await reader.ReadToEndAsync();
                     }
@@ -65,6 +66,7 @@ namespace DriverThermicPrinter {
                     }
 
                     coneccion.Response.Close();
+
                 } catch (Exception ex) {
                     msj mensaje = new msj();
 
